@@ -16,33 +16,24 @@ This project aims to predict the likelihood of diabetes in patients using machin
 ## Setup
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
-   cd Diabetes
-   ```
-
-2. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
+   git clone https://github.com/delabi/Diabetes_Predictor.git
 ## Usage
 1. To run the main application:
    ```bash
    python app.py
    ```
 
-2. To generate feature importance plot:
+2. To run the Streamlit application:
+   ```bash
+   streamlit run app.py
+   ```
+
+3. To generate feature importance plot:
    ```bash
    python generate_feature_importance.py
    ```
 
-3. To run the unit tests:
+4. To run the unit tests:
    ```bash
    python -m unittest test_diabetes_prediction.py
    ```
-
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-This project is licensed under the MIT License.
