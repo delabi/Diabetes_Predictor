@@ -6,34 +6,44 @@ This project aims to predict the likelihood of diabetes in patients using machin
 ## Project Structure
 - `app.py`: Main application script.
 - `diabetes_model.pkl`: Trained machine learning model.
-- `diabetes_prediction.py`: Script for making predictions using the trained model.
-- `generate_feature_importance.py`: Script to generate feature importance plot.
+- `train_and_generate_importance.py`: Script to train the model and generate feature importance plot.
+- `important_features.csv`: CSV file showing the important features.
 - `important_features.png`: Image showing the important features.
-- `test_diabetes_prediction.py`: Unit tests for the prediction script.
 - `dataset/diabetes.csv`: Dataset used for training and evaluation.
 - `notebooks/`: Jupyter notebooks for exploratory data analysis and model training.
+
+## Data Description
+The dataset used for training the model is the Pima Indians Diabetes Database. It contains 768 records with the following features:
+- `Pregnancies`: Number of times pregnant
+- `Glucose`: Plasma glucose concentration a 2 hours in an oral glucose tolerance test
+- `BloodPressure`: Diastolic blood pressure (mm Hg)
+- `SkinThickness`: Triceps skin fold thickness (mm)
+- `Insulin`: 2-Hour serum insulin (mu U/ml)
+- `BMI`: Body mass index (weight in kg/(height in m)^2)
+- `DiabetesPedigreeFunction`: Diabetes pedigree function
+- `Age`: Age (years)
+- `Outcome`: Class variable (0 or 1) indicating whether the patient has diabetes
 
 ## Setup
 1. Clone the repository:
    ```bash
    git clone https://github.com/delabi/Diabetes_Predictor.git
+   ```
+
+2. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 ## Usage
-1. To run the main application:
+1. To run the project:
    ```bash
-   python app.py
+   ./run_project.sh
    ```
 
-2. To run the Streamlit application:
-   ```bash
-   streamlit run app.py
-   ```
+## Features
+- User can input health metrics through the Streamlit app.
+- The app predicts whether the user has diabetes and shows the probability.
+- The app displays the feature importance of the model in order.
 
-3. To generate feature importance plot:
-   ```bash
-   python generate_feature_importance.py
-   ```
-
-4. To run the unit tests:
-   ```bash
-   python -m unittest test_diabetes_prediction.py
-   ```
+![Diabetes Predictor](image.png)

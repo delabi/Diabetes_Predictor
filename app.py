@@ -1,45 +1,54 @@
 import streamlit as st
+import pandas as pd
 import pickle
-import numpy as np
 
 # Load the trained model
 with open('diabetes_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
+# Load the dataset
+data = pd.read_csv('dataset/diabetes.csv')
+X = data.drop(columns='Outcome')
+
+# Streamlit app
 st.title('Diabetes Prediction App')
 
-# Collect user input
-st.write("""
-### Input Parameters
-Please provide the following information:
-- **Pregnancies**: Number of times pregnant (0-20)
-- **Glucose**: Plasma glucose concentration (0-200)
-- **Blood Pressure**: Diastolic blood pressure (mm Hg) (0-150)
-- **Skin Thickness**: Triceps skin fold thickness (mm) (0-100)
-- **Insulin**: 2-Hour serum insulin (mu U/ml) (0-900)
-- **BMI**: Body mass index (weight in kg/(height in m)^2) (0.0-70.0)
-- **Diabetes Pedigree Function**: Diabetes pedigree function (0.0-3.0)
-- **Age**: Age (years) (0-120)
-""")
+# User input
+st.sidebar.header('User Input Features')
+def user_input_features():
+    glucose = st.sidebar.slider('Glucose', 0, 199, 117)
+    bmi = st.sidebar.slider('BMI', 0.0, 67.1, 32.0)
+    age = st.sidebar.slider('Age', 21, 81, 29)
+    pregnancies = st.sidebar.slider('Pregnancies', 0, 17, 3)
+    blood_pressure = st.sidebar.slider('Blood Pressure', 0, 122, 72)
+    skin_thickness = st.sidebar.slider('Skin Thickness', 0, 99, 23)
+    insulin = st.sidebar.slider('Insulin', 0.0, 846.0, 30.0)
+    dpf = st.sidebar.slider('Diabetes Pedigree Function', 0.0, 2.42, 0.3725)
+    data = {'Glucose': glucose,
+            'BMI': bmi,
+            'Age': age,
+            'Pregnancies': pregnancies,
+            'BloodPressure': blood_pressure,
+            'SkinThickness': skin_thickness,
+            'Insulin': insulin,
+            'DiabetesPedigreeFunction': dpf}
+    features = pd.DataFrame(data, index=[0])
+    return features
 
-pregnancies = st.number_input('Pregnancies (0-20)', min_value=0, max_value=20, value=0)
-glucose = st.number_input('Glucose (0-200)', min_value=0, max_value=200, value=0)
-blood_pressure = st.number_input('Blood Pressure (0-150)', min_value=0, max_value=150, value=0)
-skin_thickness = st.number_input('Skin Thickness (0-100)', min_value=0, max_value=100, value=0)
-insulin = st.number_input('Insulin (0-900)', min_value=0, max_value=900, value=0)
-bmi = st.number_input('BMI (0.0-70.0)', min_value=0.0, max_value=70.0, value=0.0)
-dpf = st.number_input('Diabetes Pedigree Function (0.0-3.0)', min_value=0.0, max_value=3.0, value=0.0)
-age = st.number_input('Age (0-120)', min_value=0, max_value=120, value=0)
+input_df = user_input_features()
 
-st.write("### Important Features")
-st.image("important_features.png", caption="Important Features in the Model")
+# Ensure the feature order matches the training data
+df = input_df[X.columns]
 
-# Predict diabetes
-if st.button('Predict'):
-    user_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
-    prediction = model.predict(user_data)
-    probability = model.predict_proba(user_data)[0][1]
-    if prediction[0] == 1:
-        st.write(f'The model predicts that you have diabetes with a probability of {probability:.2f}.')
-    else:
-        st.write(f'The model predicts that you do not have diabetes with a probability of {probability:.2f}.')
+# Predict
+prediction = model.predict(df)
+
+# Display prediction with probability
+st.subheader('Prediction')
+probability = model.predict_proba(df)[0][1]
+st.write(f'Diabetic (Probability: {probability:.2f})' if prediction[0] == 1 else f'Not Diabetic (Probability: {probability:.2f})')
+
+# Display feature importance
+st.subheader('Feature Importance')
+importance_df = pd.read_csv('important_features.csv').sort_values(by='Importance', ascending=False)
+st.bar_chart(importance_df.set_index('Feature'))
